@@ -1,7 +1,9 @@
 library(tidyverse)
 library(caret)
 library(R.utils)
+# Unzip the downloaded cover type data file
 gunzip("data/covtype.data.gz", overwrite = TRUE, remove = FALSE)
+# Read in forest covertype data from csv
 covtype <- read_csv(
   "data/covtype.data",
   col_names = c(
@@ -119,6 +121,7 @@ covtype <- read_csv(
     y = col_factor()                   # Forest Cover Type designation (integer 1 to 7. 1 - Spruce-fir, 2 - Lodgepole-pine, 3 - Ponderosa-pine, 4 - Cottonwood-willow, 5 - Aspen, 6 - Douglas-fir, 7 - Krummholz)
   )
 )
+# Convert Wilderness Area and Soil Type variables to 2-level Factors
 covtype <- covtype %>%
   mutate(
     wa1 = factor(ifelse(wa1 == 0, "Absence", "Presence"), levels = c("Absence", "Presence")),
@@ -167,9 +170,14 @@ covtype <- covtype %>%
     st40 = factor(ifelse(st40 == 0, "Absence", "Presence"), levels = c("Absence", "Presence")),
     y = factor(ifelse(y == 1, "Spruce", ifelse(y == 2, "Lodgepole", ifelse(y == 3, "Panderosa", ifelse(y == 4, "Cottonwood", ifelse(y == 5, "Aspen", ifelse(y == 6, "Douglas", "Krummholz")))))))
   )
+# Create train and test data sets
 set.seed(2, sample.kind="Rounding")
-test_index <- createDataPartition(y = covtype$y, times = 1, p = 0.5, list = FALSE)
+test_index <- createDataPartition(y = covtype$y, times = 1, p = 0.4, list = FALSE)
 train <- covtype[-test_index,]
 test <- covtype[test_index,]
+# Put train and test data sets together in a list
 dat <- list(train = train, test = test)
+# Save train and test data sets to ./rda folder
 save(dat, file = "rda/dat.rda")
+# Save original data sets to ./rda folder
+save(covtype, file = "rda/covtype.rda")

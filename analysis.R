@@ -1938,7 +1938,16 @@ mean(acc_hat)
 # 6 Panderosa  10727
 # 7 Spruce     63552
 
+## https://rafalab.github.io/dsbook/caret.html
+## Use 10-fold cross validation
+control <- trainControl(method = "cv", number = 10, p = .9)
+fit <- knn3(y ~ ., data = dat$train, k = 5)
+## fit_knn <- train(y ~ ., method = "knn", data = dat$train, tuneGrid = data.frame(k = seq(9, 71, 2)), trControl = control)
+fit_knn_cv <- train(y ~ ., method = "knn", data = dat$train, tuneGrid = data.frame(k = seq(1, 15, 2)), trControl = control)
+## started at 6.56pm
+ggplot(fit_knn_cv, highlight = TRUE)
 
-
+train_knn <- train(y ~ ., method = "knn", data = dat$train)
+## started at 1.21pm
 
 
