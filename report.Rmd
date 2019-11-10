@@ -22,7 +22,7 @@ load("rda/covtype.rda")
 
 ### INTRODUCTION
 
-The forest cover type project aims to build a machine learning model that predicts what types of trees grow in an area based on the surrounding characteristics using the [Forest Cover Type Dataset](https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/covtype.data.gz). This dataset contains tree observations from four areas of the Roosevelt National Forest in Colorado. All observations are cartographic variables (no remote sensing) from 30 meter x 30 meter sections of forest. This dataset includes information on tree type, shadow coverage, distance to nearby landmarks (roads, water bodies, etc), soil type, and local topography.
+The forest cover type project aims to build a machine learning model that predicts what types of trees grow in an area based on the surrounding characteristics using the **Forest Cover Type Dataset** from  [https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/covtype.data.gz](https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/covtype.data.gz). This dataset contains tree observations from four areas of the Roosevelt National Forest in Colorado. All observations are cartographic variables (no remote sensing) from 30 meter x 30 meter sections of forest. This dataset includes information on tree type, shadow coverage, distance to nearby landmarks (roads, water bodies, etc), soil type, and local topography.
 
 #### Dataset
 
@@ -267,7 +267,7 @@ train_knn <- train(y ~ ., method = "knn", data = dat$train, trControl = control)
 
 The plot function can be used to examine the relationship between the estimates of performance and the tuning parameters.
 
-![](rda/train_knn_plot.png)
+![](train_knn_plot.png)
 
 Accuracy was used to select the optimal model using the largest value. The final value used for the model was $k = 5$. This can be seen in the following table.
 
@@ -279,23 +279,105 @@ resampling_results_knn <- data.frame(
     9
   ),
   Accuracy = c(
-    0.9490477,
-    0.9434776,
-    0.9382109
+    0.9388735,
+    0.9320578,
+    0.9252478
   ),
   Kappa = c(
-    0.9180877,
-    0.9090698,
-    0.9005325
+    0.9017159,
+    0.8906236,
+    0.8795266
   )
 )
 kable(resampling_results_knn, caption = "Resampling results across tuning parameters")
 ```
 
-Here is the accuracy of the best model when applied to the test set, which we have not used at all yet because the cross validation was done on the training set:
+The accuracy of the best model when applied to the test set, (which we have not used at all yet because the cross validation was done on the training set) is **0.9622**. Class specific summary statistics are shown in the table below.
 
-```{r}
-# cm_knn$overall["Accuracy"]
+```{r echo=FALSE}
+class_statistics_knn <- data.frame(
+  Statistic = c(
+    "Sensitivity",
+    "Specificity",
+    "Pos Pred Value",
+    "Neg Pred Value",
+    "Prevalence",
+    "Detection Rate",
+    "Detection Prevalence",
+    "Balanced Accuracy"
+  ),
+  Aspen = c(
+    0.87678,
+    0.99848,
+    0.90563,
+    0.99795,
+    0.01634,
+    0.01433,
+    0.01582,
+    0.93763
+  ),
+  Cottonwood = c(
+    0.757052,
+    0.999546,
+    0.887940,
+    0.998847,
+    0.004729,
+    0.003580,
+    0.004032,
+    0.878299
+  ),
+  Douglas = c(
+    0.91694,
+    0.99743,
+    0.91655,
+    0.99744,
+    0.02989,
+    0.02741,
+    0.02990,
+    0.95719
+  ),
+  Krummholz = c(
+    0.96514,
+    0.99884,
+    0.96833,
+    0.99872,
+    0.03530,
+    0.03407,
+    0.03518,
+    0.98199
+  ),
+  Lodgepole = c(
+    0.9709,
+    0.9679,
+    0.9664,
+    0.9722,
+    0.4876,
+    0.4734,
+    0.4898,
+    0.9694
+  ),
+  Panderosa = c(
+    0.95819,
+    0.99666,
+    0.94956,
+    0.99726,
+    0.06154,
+    0.05897,
+    0.06210,
+    0.97742
+  ),
+  Spruce = c(
+    0.9613,
+    0.9801,
+    0.9652,
+    0.9778,
+    0.3646,
+    0.3505,
+    0.3631,
+    0.9707
+  )
+)
+kable(class_statistics_knn, caption = "Statistics by Class: k-Nearest Neighbors")
 ```
 
 ##### Random Forest
@@ -310,7 +392,7 @@ train_rf <- train(y ~ ., method = "rf", data = dat$train, trControl = control)
 
 The plot function can be used to examine the relationship between the estimates of performance and the tuning parameters.
 
-![](rda/train_rf_plot.png)
+![](train_rf_plot.png)
 
 Accuracy was used to select the optimal model using the largest value. The final value used for the model was $mtry = 28$. This can be seen in the resampling results as shown in the following table.
 
@@ -335,7 +417,7 @@ resampling_results_rf <- data.frame(
 kable(resampling_results_rf, caption = "Resampling results across tuning parameters")
 ```
 
-Here is the accuracy of the best model when applied to the test set, which we have not used at all yet because the cross validation was done on the training set: 0.9649. Class specific summary statistics are shown in the table below.
+The accuracy of the best model when applied to the test set (which we have not used at all yet because the cross validation was done on the training set) is **0.9649**. Class specific summary statistics are shown in the table below.
 
 ```{r echo=FALSE}
 class_statistics_rf <- data.frame(
@@ -447,7 +529,7 @@ resampling_results_lda <- data.frame(
 kable(resampling_results_lda, caption = "Resampling results")
 ```
 
-Here is the accuracy of the best model when applied to the test set, which we have not used at all yet because the cross validation was done on the training set: 0.6788. Class specific summary statistics are shown in the table below.
+The accuracy of the best model when applied to the test set (which we have not used at all yet because the cross validation was done on the training set) is **0.6788**. Class specific summary statistics are shown in the table below.
 
 ```{r echo=FALSE}
 class_statistics_lda <- data.frame(
@@ -547,7 +629,7 @@ train_mn <- train(y ~ ., method = "multinom", data = dat$train, trControl = cont
 
 The plot function can be used to examine the relationship between the estimates of performance and the tuning parameters.
 
-![](rda/train_mn_plot.png)
+![](train_mn_plot.png)
 
 Accuracy was used to select the optimal model using the largest value. The final value used for the model was $decay = 0.1$. This can be seen in the resampling results as shown in the following table.
 
@@ -572,7 +654,7 @@ resampling_results_mn <- data.frame(
 kable(resampling_results_mn, caption = "Resampling results across tuning parameters")
 ```
 
-Here is the accuracy of the best model when applied to the test set, which we have not used at all yet because the cross validation was done on the training set: 0.6982. Class specific summary statistics are shown in the table below.
+The accuracy of the best model when applied to the test set (which we have not used at all yet because the cross validation was done on the training set) is **0.6982**. Class specific summary statistics are shown in the table below.
 
 ```{r echo=FALSE}
 class_statistics_mn <- data.frame(
@@ -662,14 +744,133 @@ kable(class_statistics_mn, caption = "Statistics by Class: Penalized Multinomial
 
 ##### Support Vector Machines with Linear Kernel
 
+A Support Vector Machine with Linear Kernel model was trained with the **caret** *train()* function. The *train()* function was configured to use k-fold cross-validation for parameter tuning with $k = 2$ using code similar to the following.
+
+```{r eval=FALSE}
+library(caret)
+control <- trainControl(method = "cv", number = 2)
+train_lda <- train(y ~ ., method = "svmLinear", data = dat$train, trControl = control)
+```
+
+Accuracy was used to select the optimal model using the largest value. The final value used for the model was $C = 1$. This can be seen in the resampling results as shown in the following table.
+
+```{r echo=FALSE}
+resampling_results_svm <- data.frame(
+  C = c(
+    0.05,
+    1,
+    1.5
+  ),
+  Accuracy = c(
+    1.0000000,
+    0.7254658,
+    1.0000000
+  ),
+  Kappa = c(
+    1.0000000,
+    0.5499397,
+    1.0000000
+  )
+)
+kable(resampling_results_svm, caption = "Resampling results")
+```
+
+The accuracy of the best model when applied to the test set (which we have not used at all yet because the cross validation was done on the training set) is **0.7269**. Class specific summary statistics are shown in the table below.
+
+```{r echo=FALSE}
+class_statistics_svm <- data.frame(
+  Statistic = c(
+    "Sensitivity",
+    "Specificity",
+    "Pos Pred Value",
+    "Neg Pred Value",
+    "Prevalence",
+    "Detection Rate",
+    "Detection Prevalence",
+    "Balanced Accuracy"
+  ),
+  Aspen = c(
+    0.0068457,
+    0.9999913,
+    0.9285714,
+    0.9837679,
+    0.0163420,
+    0.0001119,
+    0.0001205,
+    0.5034185
+  ),
+  Cottonwood = c(
+    0.404004,
+    0.999122,
+    0.686244,
+    0.997174,
+    0.004729,
+    0.001910,
+    0.002784,
+    0.701563
+  ),
+  Douglas = c(
+    0.163812,
+    0.995769,
+    0.543977,
+    0.974778,
+    0.029892,
+    0.004897,
+    0.009001,
+    0.579790
+  ),
+  Krummholz = c(
+    0.53194,
+    0.99182,
+    0.70398,
+    0.98302,
+    0.03530,
+    0.01878,
+    0.02667,
+    0.76188
+  ),
+  Lodgepole = c(
+    0.7966,
+    0.7538,
+    0.7549,
+    0.7957,
+    0.4876,
+    0.3884,
+    0.5146,
+    0.7752
+  ),
+  Panderosa = c(
+    0.88142,
+    0.97005,
+    0.65866,
+    0.99205,
+    0.06154,
+    0.05424,
+    0.08235,
+    0.92573
+  ),
+  Spruce = c(
+    0.7092,
+    0.8333,
+    0.7094,
+    0.8331,
+    0.3646,
+    0.2586,
+    0.3645,
+    0.7712
+  )
+)
+kable(class_statistics_svm, caption = "Statistics by Class: Support Vector Machines with Linear Kernel")
+```
+
 #### Ensemble
 
-Finally we build an ensemble model from the predictions of the models we have already built. When the ensemble is presented with an observation or example to classify, it examines the predictions of each of its component models for the same example and then predicts the class with the majority vote. When we construct the ensemble from all the models we have previously built, namely, *k-Nearest Neighbors*, *Random Forest*, *Linear Discriminant Analysis*, *Penalized Multinomial Regression* and *Support Vector Machines with Linear Kernel*, we obtain an overall ensemble accuracy of **0.7690087**, which is lower than the individual accuracies obtained by some of its constituent models. This is shown in the table below.
+Finally we build an ensemble model from the predictions of the models we have already built. When the ensemble is presented with an observation or example to classify, it examines the predictions of each of its component models for the same example and then predicts the class with the majority vote. When we construct the ensemble from all the models we have previously built, namely, *k-Nearest Neighbors*, *Random Forest*, *Linear Discriminant Analysis*, *Penalized Multinomial Regression* and *Support Vector Machines with Linear Kernel*, we obtain an overall ensemble accuracy of **0.790385**, which is lower than the individual accuracies obtained by some of its constituent models. This is shown in the table below.
 
 ```{r echo=FALSE}
 ensemble_accuracies_all <- data.frame(
   kNN = c(
-    0.9686
+    0.9622
   ),
   randomForest = c(
     0.9649
@@ -681,10 +882,10 @@ ensemble_accuracies_all <- data.frame(
     0.6982
   ),
   SVM = c(
-    0.8141
+    0.7269
   ),
   Ensemble = c(
-    0.7690
+    0.7903
   )
 )
 kable(ensemble_accuracies_all, caption = "Ensemble Accuracy vs. Component Model Accuracies: All")
@@ -717,7 +918,7 @@ In this analysis we have trained several machine learning models to predict fore
 ```{r echo=FALSE}
 analysis_results <- data.frame(
   kNN = c(
-    0.9686
+    0.9622
   ),
   randomForest = c(
     0.9649
@@ -729,10 +930,10 @@ analysis_results <- data.frame(
     0.6982
   ),
   SVM = c(
-    0.8141
+    0.7269
   ),
   Ensemble = c(
-    0.7690
+    0.7903
   )
 )
 kable(analysis_results, caption = "Forest Cover Type Analysis Results")
@@ -740,11 +941,11 @@ kable(analysis_results, caption = "Forest Cover Type Analysis Results")
 
 ### CONCLUSION
 
-From the accuracies presented in the results section, we conclude that if we were to pick just one model to predict forest cover type with it should be the *k-Nearest Neighbors* model. *k-Nearest Neighbors* takes the longest time to train and also takes the longest time to predict. It's delivered accuracies make up for this however. The next best performing model for predicting forest cover type is the *Random Forest* model, which also takes a long time to train, albeit not as long as *k-Nearest Neighbors* model. Predicting from the *Random Forest* model is somewhat as time consuming as it is with *k-Nearest Neighbors*.
+From the accuracies presented in the results section, we conclude that if we were to pick just one model to predict forest cover type - it should be the **Random Forest** model. The *Random Forest* takes the third longest time to train (about 6hrs with 2-fold cross-validation) and computes predictions in 1 minute or less, with an accuracy of **0.9649**. The next best performing model is the *k-Nearest Neighbors* model, which takes the second longest time to train (about 7hrs with 2-fold cross-validation) and computes predictions in about 2 hours or less, with an accuracy of **0.9622**. It was observed that the accuracy obtained with *k-Nearest Neighbors* increases with the size of the train data set.
 
 #### Limitations
 
-Infrastructure and time where a huge limitation during this analysis. Several of the machine learning algorithms trained on this project took days on end to train due to large dataset size. I think this will have been different if I had access to more infrastructure - faster hardware, more processing power, memory, and disk. This lack of infrastructure led me to reduce the time spent tuning model parameters.
+Infrastructure and time were a huge limitation during this analysis. Several of the machine learning algorithms trained on this project took days on end to train due to large dataset size. I think this will have been different if I had access to more infrastructure - faster hardware, more processing power, memory, and disk. This lack of infrastructure led me to reduce the time spent tuning model parameters.
 
 #### Future work
 
@@ -752,4 +953,4 @@ If I had to do this analysis again, I would certainly start with more infrastruc
 
 #### Finally
 
-What do you mean finally? There is no finally :-). **That's all folks**. Thanks and Bye for now! Lolz. Just kidding. Ha ah. I have had loads of fun doing this analysis. Faced lots of frustrations and waiting for training to complete while tapping my fingers impatiently on my keyboard. I however enjoyed myself quite thoroughly and learnt quite a lot while pulling my hair off from their roots. Wish I I had more time and infrastructure to throw at this. Plus - I am not completely bald just yet...
+What do you mean finally? There is no finally :-). **That's all folks**. Thanks and Bye for now! Lolz. Just kidding. Ha ah. I have had loads of fun doing this analysis. Faced lots of frustrations and waiting for training to complete while tapping my fingers impatiently on my keyboard. I however enjoyed myself quite thoroughly and learnt quite a lot while pulling my hair off from their roots. Wish I had more time and infrastructure to throw at this. Plus - I am not completely bald just yet...
