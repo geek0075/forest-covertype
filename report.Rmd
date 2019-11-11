@@ -10,6 +10,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r loading-libs, message=FALSE, echo=FALSE}
+if(!require(tidyverse)) install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+if(!require(caret)) install.packages("caret", repos = "http://cran.us.r-project.org")
+if(!require(knitr)) install.packages("knitr", repos = "http://cran.us.r-project.org")
 library(tidyverse)
 library(caret)
 library(knitr)
@@ -889,26 +892,6 @@ ensemble_accuracies_all <- data.frame(
   )
 )
 kable(ensemble_accuracies_all, caption = "Ensemble Accuracy vs. Component Model Accuracies: All")
-```
-
-But when we construct the ensemble from the top three individual models, *k-Nearest Neighbors*, *Random Forest* and *Support Vector Machines with Linear Kernel*, we obtain an overall ensemble accuracy of **0.9990087**, which is higher than the individual accuracies by using each model independently. This is shown in the table below.
-
-```{r echo=FALSE}
-ensemble_accuracies_top3 <- data.frame(
-  kNN = c(
-    0.9686
-  ),
-  randomForest = c(
-    0.9649
-  ),
-  SVM = c(
-    0.8141
-  ),
-  Ensemble = c(
-    0.9990
-  )
-)
-kable(ensemble_accuracies_top3, caption = "Ensemble Accuracy vs. Component Model Accuracies: Top3")
 ```
 
 ### RESULTS
